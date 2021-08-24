@@ -1,0 +1,74 @@
+$("body").on("change", "input#hide_series:checkbox", function (event)
+    {
+        event.preventDefault();
+        event.stopPropagation();
+        var count = {};
+        var countSeries = {};
+        var obj = {};
+        if ($(this).is(":checked"))
+        {
+            $("td.NAME").each(function (index, el)
+            {
+                var val = $(el)
+                    .find("span.edit_val[data-prop=SERIES]")
+                    .attr("data-val");
+                if (in_array(val, series))
+                {
+                    if (typeof count[val] != "undefined")
+                    {
+                        $(el)
+                            .parents("tr")
+                            .addClass("hidden");
+                    } else
+                    {
+                        obj[val] = el;
+                    }
+                    if (typeof countSeries[val] == "undefined") countSeries[val] = 0;
+                    countSeries[val]++;
+                }
+                count[val]++;
+            });
+
+            for (i in obj)
+            {
+                if (typeof countSeries[i] != "undefined")
+                    $(obj[i])
+                        .parents("tr")
+                        .find("td.DETAIL_PICTURE")
+                        .prepend(
+                            "<span class='count-series'>" + countSeries[i] + "</span>"
+                        );
+            }
+        } else
+        {
+            $("td.NAME").each(function (index, el)
+            {
+                var val = $(el)
+                    .find("span.edit_val[data-prop=SERIES]")
+                    .attr("data-val");
+                if (in_array(val, series))
+                {
+                    if (typeof count[val] != "undefined")
+                    {
+                        $(el)
+                            .parents("tr")
+                            .removeClass("hidden");
+                    } else
+                    {
+                        obj[val] = el;
+                    }
+                    if (typeof countSeries[val] == "undefined") countSeries[val] = 0;
+                    countSeries[val]--;
+                }
+                count[val]++;
+            });
+
+            for (i in obj)
+            {
+                $(obj[i])
+                    .parents("tr")
+                    .find("td.DETAIL_PICTURE span.count-series")
+                    .remove();
+            }
+        }
+    });
